@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán Vé Máy Bay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .option {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .option-title {
+            font-weight: normal; /* Đặt chữ không đậm */
+        }
+
+        input[type="text"], select {
+            padding: 8px;
+            width: 100%;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            background: #0366d6;
+            color: #fff;
+        }
+
+        button:hover {
+            background: #025bb5;
+        }
+
+        .display-info {
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .display-info .left-info {
+            width: 60%;
+        }
+
+        .display-info .qr-container {
+            width: 35%;
+            text-align: center;
+        }
+
+        .qr-code img {
+            width: 180px;
+            height: 180px;
+        }
+
+        .form-section {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .form-container {
+            width: 100%;
+        }
+
+        .info-text {
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #000000; /* Màu đen cho chữ */
+            font-weight: normal; /* Đảm bảo chữ không đậm */
+        }
+
+        .display-info p {
+            font-weight: normal; /* Đảm bảo chữ không đậm */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Phần thông tin yêu cầu -->
+   
+
+    <!-- Phần chọn phương thức thanh toán -->
+    <div class="option">
+        <div class="option-title">Chọn phương thức thanh toán</div>
+        <input type="radio" id="atm" name="payment-method" value="ATM" checked>
+        <label for="atm">Thẻ ATM nội địa qua OnePay (Phí giao dịch 1.2%)</label><br>
+        <input type="radio" id="visa" name="payment-method" value="Visa">
+        <label for="visa">Thẻ ATM nội địa qua VNPay (Phí giao dịch 1%)</label><br>
+        <input type="radio" id="bank-transfer" name="payment-method" value="Bank Transfer">
+        <label for="visa">Thẻ tín dụng qua OnePay (Phí giao dịch 3.4%)</label><br>
+        <input type="radio" id="bank-transfer" name="payment-method" value="Bank Transfer">
+        <label for="bank-transfer">Chuyển khoản</label><br>
+    </div>
+
+   
+    <!-- Phần thông tin chuyển khoản hiển thị -->
+    <div class="display-info">
+        <div class="left-info">
+            <h3>Thông tin chuyển khoản thanh toán vé máy bay</h3>
+            <p><strong>Tên tài khoản:</strong> <span id="display-account-name">TRA THI KIM ANH</span></p>
+            <p><strong>Số tiền:</strong> <span id="display-amount">11,700,000 VND</span></p>
+            <p><strong>Nội dung:</strong> <span id="display-content">FML98507905K</span></p>
+            <p><strong>Ngân hàng:</strong> <span id="display-bank">SHB</span></p>
+            <p><strong>Số tài khoản:</strong> <span id="display-stk">1508200368</span></p>
+            <p>Sau khi nhận được thông tin đặt dịch vụ, nhân viên chăm sóc khách hàng của chúng tôi sẽ liên hệ với Quý khách để xác nhận và hướng dẫn thêm về thủ tục thanh toán.</p>
+        </div>
+        <div class="qr-container">
+            <h3>Mã QR Thanh Toán:</h3>
+            <div class="qr-code">
+                <img id="qr-code-display" src="https://via.placeholder.com/180x180.png?text=QR+Code" alt="QR Code">
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="form-section">
+        <h3>Thông tin chuyển khoản (Nhập)</h3>
+        <div class="form-container">
+            <label for="account-name-input">Tên tài khoản:</label>
+            <input type="text" id="account-name-input" value="TRA THI KIM ANH" oninput="updateInfo()">
+
+            <label for="amount-input">Số tiền:</label>
+            <input type="text" id="amount-input" value="11,700,000 VND" oninput="updateInfo()">
+
+            <label for="content-input">Nội dung:</label>
+            <input type="text" id="content-input" value="FML98507905K" oninput="updateInfo()">
+
+            <label for="bank-input">Ngân hàng:</label>
+            <input type="text" id="bank-input" value="SHB" oninput="updateInfo()">
+
+            <label for="stk-input">Số tài khoản:</label>
+            <input type="text" id="stk-input" value="1508200368" oninput="updateInfo()">
+
+            <button onclick="updateInfo()">Cập nhật thông tin</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateInfo() {
+        // Cập nhật thông tin hiển thị
+        document.getElementById('display-account-name').textContent = document.getElementById('account-name-input').value;
+        document.getElementById('display-amount').textContent = document.getElementById('amount-input').value;
+        document.getElementById('display-content').textContent = document.getElementById('content-input').value;
+        document.getElementById('display-bank').textContent = document.getElementById('bank-input').value;
+        document.getElementById('display-stk').textContent = document.getElementById('stk-input').value;
+
+        // Tạo URL cho mã QR sử dụng API VietQR
+        var bankId = document.getElementById('bank-input').value;
+        var accountNo = document.getElementById('stk-input').value;
+        var amount = document.getElementById('amount-input').value;
+        var description = document.getElementById('content-input').value;
+        var accountName = document.getElementById('account-name-input').value;
+
+        var qrCodeUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-vietqr_net.png?amount=${amount}&addInfo=${description}&accountName=${accountName}`;
+        document.getElementById('qr-code-display').src = qrCodeUrl;
+    }
+</script>
+
+</body>
+</html>
