@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh Toán Vé Máy Bay</title>
+    <!-- Kết nối với Google Fonts để sử dụng font Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif; /* Sử dụng font Roboto */
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
@@ -38,6 +40,7 @@
             margin-top: 5px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            font-family: 'Roboto', sans-serif; /* Cập nhật font cho các ô nhập liệu */
         }
 
         button {
@@ -105,7 +108,6 @@
 
 <div class="container">
     <!-- Phần thông tin yêu cầu -->
-   
 
     <!-- Phần chọn phương thức thanh toán -->
     <div class="option">
@@ -114,13 +116,12 @@
         <label for="atm">Thẻ ATM nội địa qua OnePay (Phí giao dịch 1.2%)</label><br>
         <input type="radio" id="visa" name="payment-method" value="Visa">
         <label for="visa">Thẻ ATM nội địa qua VNPay (Phí giao dịch 1%)</label><br>
-        <input type="radio" id="bank-transfer" name="payment-method" value="Bank Transfer">
-        <label for="visa">Thẻ tín dụng qua OnePay (Phí giao dịch 3.4%)</label><br>
+        <input type="radio" id="credit-card" name="payment-method" value="Credit Card">
+        <label for="credit-card">Thẻ tín dụng qua OnePay (Phí giao dịch 3.4%)</label><br>
         <input type="radio" id="bank-transfer" name="payment-method" value="Bank Transfer">
         <label for="bank-transfer">Chuyển khoản</label><br>
     </div>
 
-   
     <!-- Phần thông tin chuyển khoản hiển thị -->
     <div class="display-info">
         <div class="left-info">
@@ -139,7 +140,6 @@
             </div>
         </div>
     </div>
-    
 
     <div class="form-section">
         <h3>Thông tin chuyển khoản (Nhập)</h3>
