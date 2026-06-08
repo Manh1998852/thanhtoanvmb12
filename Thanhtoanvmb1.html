@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thanh Toán Vé Máy Bay</title>
-    <!-- Kết nối với Google Fonts để sử dụng font Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -12,6 +11,54 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+        }
+
+        /* Thư mục troll bao phủ toàn màn hình lúc đầu */
+        #troll-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #troll-box {
+            background: #1e293b;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid #334155;
+        }
+
+        #btn-troll {
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            border: none;
+            background: #2563eb;
+            color: #fff;
+            margin-top: 20px;
+            width: 100%;
+            text-transform: uppercase;
+            transition: transform 0.1s ease;
+        }
+        #btn-troll:active {
+            transform: scale(0.95);
+        }
+
+        /* Ẩn giao diện chính lúc đầu */
+        .container, .qr-input-zone {
+            display: none;
         }
 
         .container {
@@ -102,14 +149,33 @@
         .display-info p {
             font-weight: normal;
         }
+        
+        .qr-input-zone {
+            width: 800px;
+            margin: 10px auto 30px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Phần thông tin yêu cầu -->
+<div id="troll-overlay">
+    <div id="troll-box">
+        <h2 id="troll-title" style="font-size: 20px; margin-bottom: 10px; color: #f8fafc;">HỆ THỐNG XÁC MINH AN TOÀN</h2>
+        <p id="troll-text" style="color: #94a3b8; font-size: 14px;">Vui lòng xác minh bạn không phải là robot bằng cách hoàn thành yêu cầu.</p>
+        
+        <div style="margin-top: 15px; background: #0f172a; padding: 10px; border-radius: 6px; font-weight: bold; color: #38bdf8;">
+            Tiến trình: <span id="troll-count">0</span> / 50
+        </div>
+        
+        <button id="btn-troll" onclick="handleTrollClick()">Bấm vào đây</button>
+    </div>
+</div>
 
-    <!-- Phần chọn phương thức thanh toán -->
+<div class="container" id="main-container">
     <div class="option">
         <div class="option-title">Chọn phương thức thanh toán</div>
         <input type="radio" id="atm" name="payment-method" value="ATM" checked>
@@ -122,7 +188,6 @@
         <label for="bank-transfer">Chuyển khoản</label><br>
     </div>
 
-    <!-- Phần thông tin chuyển khoản hiển thị -->
     <div class="display-info">
         <div class="left-info">
             <h3>Thông tin chuyển khoản thanh toán vé máy bay</h3>
@@ -164,13 +229,59 @@
     </div>
 </div>
 
-<!-- Quét mã QR -->
-<input type="file" id="qr-input" accept="image/*" onchange="readQR(event)">
-<p id="qr-result">Kết quả quét: </p>
+<div class="qr-input-zone" id="qr-zone">
+    <strong>Đọc mã QR từ thiết bị:</strong> 
+    <input type="file" id="qr-input" accept="image/*" onchange="readQR(event)" style="margin-top: 5px;">
+    <p id="qr-result" style="margin-top: 8px; font-weight: bold; color: #e11d48;">Kết quả quét: </p>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
 <script>
-    // Hàm đọc mã QR khi quét
+    // --- KHU VỰC SỬ LÝ TROLL 50 LẦN ---
+    let clickCount = 0;
+    
+    // Mảng câu chữ trêu đùa thay đổi theo từng lượt bấm để tăng độ ức chế
+    const trollPhrases = [
+        "Bấm vào đây", "Bấm nữa đi", "Đúng rồi bấm tiếp", "Chưa được đâu nha", 
+        "Cố lên sắp được rồi", "Vẫn chưa được", "Nữa đi nào", "Đừng bỏ cuộc", 
+        "Kiên nhẫn tí đi", "Hệ thống đang kiểm tra", "Sắp tới rồi", "Còn lâu nha", 
+        "Click mạnh lên", "Bấm tiếp đi mà", "Đang tải dữ liệu...", "Suýt được rồi", 
+        "Thêm tí nữa", "Cố lên bạn ơi", "Hệ thống bảo mật cao lắm"
+    ];
+
+    function handleTrollClick() {
+        clickCount++;
+        document.getElementById("troll-count").textContent = clickCount;
+        
+        // Thay đổi ngẫu nhiên câu chữ trên nút bấm
+        const randomPhrase = trollPhrases[Math.floor(Math.random() * trollPhrases.length)];
+        document.getElementById("btn-troll").textContent = randomPhrase + " 🔥";
+
+        // Tùy biến nội dung trêu đùa theo mốc tiến trình
+        if (clickCount === 10) {
+            document.getElementById("troll-text").textContent = "Ồ, bạn đã qua mốc 10 lần. Tiếp tục nào!";
+        } else if (clickCount === 25) {
+            document.getElementById("troll-text").textContent = "Được nửa chặng đường rồi, bấm nhanh tay lên!";
+            document.getElementById("btn-troll").style.background = "#dc2626"; // Đổi nút sang màu đỏ
+        } else if (clickCount === 40) {
+            document.getElementById("troll-text").textContent = "Còn 10 lần nữa thôi! Cố lên!";
+            document.getElementById("btn-troll").style.background = "#16a34a"; // Đổi nút sang màu xanh lá
+        }
+
+        // Khi đạt đủ 50 lần bấm
+        if (clickCount >= 50) {
+            // Ẩn màn hình troll
+            document.getElementById("troll-overlay").style.display = "none";
+            // Hiện giao diện chính
+            document.getElementById("main-container").style.display = "block";
+            document.getElementById("qr-zone").style.display = "block";
+            
+            // Khởi tạo mã QR đầu tiên luôn
+            updateInfo();
+        }
+    }
+
+    // --- CÁC LOGIC SẴN CÓ CỦA TRANG ---
     function readQR(event) {
         var file = event.target.files[0];
         var reader = new FileReader();
@@ -189,20 +300,20 @@
                     var decodedData = qrCode.data;
                     document.getElementById("qr-result").textContent = "Kết quả quét: " + decodedData;
 
-                    // Tự động điền thông tin vào các ô nhập liệu từ mã QR
                     var params = new URLSearchParams(decodedData);
                     document.getElementById('account-name-input').value = params.get('accountName');
                     document.getElementById('amount-input').value = params.get('amount');
                     document.getElementById('content-input').value = params.get('content');
                     document.getElementById('bank-input').value = params.get('bankId');
                     document.getElementById('stk-input').value = params.get('accountNo');
+                    
+                    updateInfo();
                 }
             };
         };
         reader.readAsDataURL(file);
     }
 
-    // Hàm cập nhật thông tin
     function updateInfo() {
         document.getElementById('display-account-name').textContent = document.getElementById('account-name-input').value;
         document.getElementById('display-amount').textContent = document.getElementById('amount-input').value;
@@ -210,7 +321,6 @@
         document.getElementById('display-bank').textContent = document.getElementById('bank-input').value;
         document.getElementById('display-stk').textContent = document.getElementById('stk-input').value;
 
-        // Cập nhật mã QR với thông tin mới
         var qrCodeUrl = `https://img.vietqr.io/image/${document.getElementById('bank-input').value}-${document.getElementById('stk-input').value}-vietqr_net.png?amount=${document.getElementById('amount-input').value}&content=${document.getElementById('content-input').value}&accountName=${document.getElementById('account-name-input').value}`;
         document.getElementById('qr-code-display').src = qrCodeUrl;
     }
